@@ -8,6 +8,7 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/pat"
 	"github.com/jmoiron/sqlx"
+	// _ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/unrolled/render"
 	"net/http"
@@ -109,9 +110,16 @@ func main() {
 	// Read database, check to see if we can open
 	db_file := "testdb.sqlite"
 	db, _ := sqlx.Open("sqlite3", db_file)
+
+	// Trying to figure out how to connect to heroku
+	// dbURL := os.Getenv("DATABASE_URL")
+	// connection, _ := pq.ParseURL(dbURL)
+	// connection = " sslmode=require"
+	// db, _ := sqlx.Open("postgres", connection)
+
 	err := db.Ping()
 	if err != nil {
-		panic(fmt.Sprintf("Unable to open database %v.", db_file))
+		panic(fmt.Sprintf("Unable to open database %v.  Error %v", db_file, err.Error()))
 	}
 	recipedb = &RecipeDatabase{DB: db}
 
