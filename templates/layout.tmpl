@@ -1,0 +1,49 @@
+<!-- templates/layout.tmpl -->
+<html>
+  <head>
+    <title>My Layout</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/pixyll.css" type="text/css">
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Merriweather:900,900italic,300,300italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Lato:900,300' rel='stylesheet' type='text/css'>
+  </head>
+  <body class="">
+  <div class="site-wrap">
+    <header class="site-header px2 px-responsive">
+      <div class="mt2 wrap">
+        <div class="measure">
+          <p class="site-title">RecipeBox</p>
+          <nav class="site-nav right">
+            <a href="/about/">About</a>
+            <a href="/contact/">Contact</a>
+          </nav>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="post p2 p-responsive wrap" role="main">
+      <div class="measure">
+        <article class="post-content">
+          {{ yield }}  
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="p2 wrap">
+      <div class="measure mt1 center">
+        <small>
+          Created with &lt;3 by <a href="http://www.harvardd4d.com/projects/">Harvard Developers for Development</a> (<a href="https://github.com/harvardd4d">Github</a>).<br>
+          Pixyll theme by <a href="https://github.com/johnotander/pixyll">johnnotander</a>.
+        </small>
+      </div>
+    </div>
+  </footer>
+
+
+</body>
+</html>
