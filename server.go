@@ -41,8 +41,8 @@ func ConnectToDB() (recipedb *RecipeDB) {
 		fmt.Printf("[recipebox] Unable to open database, will retry with sslmode=disable.  Error %v\n",
 			err.Error())
 
-		db, _ := sqlx.Open("postgres", connection+" sslmode=disable")
-		err := db.Ping()
+		db, _ = sqlx.Open("postgres", connection+" sslmode=disable")
+		err = db.Ping()
 		if err != nil {
 			panic(fmt.Sprintf("[recipebox] Unable to open database %v.  Error %v", connection, err.Error()))
 		}
