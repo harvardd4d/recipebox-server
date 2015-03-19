@@ -9,15 +9,11 @@ the instructions described in https://golang.org/doc/code.html.  Go
 is rather picky about its workspace options but allows for some
 very useful modularity as a result of this workspace organization.
 
-`github.com/codegangsta/negroni`
-
-`github.com/gorilla/pat`
-
-`github.com/lib/pq`
-
-`github.com/unrolled/render`
-
-`github.com/jmoiron/sqlx`
+- [codegansta/negroni](github.com/codegangsta/negroni)
+- [gorilla/pat](github.com/gorilla/pat)
+- [lib/pq](github.com/lib/pq)
+- [unrolled/render](github.com/unrolled/render)
+- [jmoiron/sqlx](github.com/jmoiron/sqlx)
 
 The above dependencies are necessary to build this project. 
 We are using `godep` to manage dependencies - you may choose to
@@ -103,13 +99,8 @@ Thank you to the following projects for your amazing tools! RecipeBox
 wouldn't be here without you.
 
 - [codegansta/negroni](github.com/codegangsta/negroni)
-
 - [gorilla/pat](github.com/gorilla/pat)
-
 - [lib/pq](github.com/lib/pq)
-
 - [unrolled/render](github.com/unrolled/render)
-
 - [jmoiron/sqlx](github.com/jmoiron/sqlx)
-
 - [johnotander](github.com/johnotander/pixyll)
