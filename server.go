@@ -41,6 +41,7 @@ func ConnectToDB() (recipedb *RecipeDB) {
 		fmt.Printf("[recipebox] Unable to open database, will retry with sslmode=disable.  Error %v\n",
 			err.Error())
 
+		// next, open postgres database with sslmode=disable. Only for local db.
 		db, _ = sqlx.Open("postgres", connection+" sslmode=disable")
 		err = db.Ping()
 		if err != nil {
@@ -68,7 +69,7 @@ func main() {
 
 	// Set up the router and associate routes with the controller
 	router := pat.New()
-	router.Get("/css/pixyll.css", c.Action(c.Home))
+	router.Get("/css/pixyll.css", c.Action(c.CSS))
 	router.Post("/recipes/jsonsearch", c.Action(c.RecipeJSONAdvanced))
 	router.Get("/recipes/{id:[0-9]+}/json", c.Action(c.RecipeJSON))
 	router.Get("/recipes/{id:[0-9]+}", c.Action(c.Recipe))

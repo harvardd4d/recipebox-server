@@ -1,4 +1,4 @@
-### recipebox-server-go
+### recipebox-server
 
 The RecipeBox web server, written in Go
 
@@ -93,19 +93,23 @@ The directory is set up as so:
 `server.go` handles routing.  `mycontroller.go` is the RecipeBox
 controller and handles rendering of html templates and RecipeDB querying.
 
+### Todo
+
+- Testing
+
 ### Thank you
 
 Thank you to the following projects for your amazing tools! RecipeBox
 wouldn't be here without you.
 
-`github.com/codegangsta/negroni`
+- [codegansta/negroni](github.com/codegangsta/negroni)
 
-`github.com/gorilla/pat`
+- [gorilla/pat](github.com/gorilla/pat)
 
-`github.com/lib/pq`
+- [lib/pq](github.com/lib/pq)
 
-`github.com/unrolled/render`
+- [unrolled/render](github.com/unrolled/render)
 
-`github.com/jmoiron/sqlx`
+- [jmoiron/sqlx](github.com/jmoiron/sqlx)
 
-`github.com/johnotander/pixyll`
+- [johnotander](github.com/johnotander/pixyll)
