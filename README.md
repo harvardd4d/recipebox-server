@@ -31,10 +31,15 @@ dependencies.
 Run `go build` in the recipebox-go-server folder to compile the code.
 This will create an executable named `recipebox-go-server`.  Run
 
-    $ ./recipebox-go-server -port=8080
+    $ ./recipebox-go-server
 
-The server will attach itself to port 8080 by default if the port
-flag is not specified.
+The server will attach itself to port 8080 by default unless
+the `PORT` environment variable is set.  In that case, the server
+will listen on the value of the PORT environment variable.
+
+The `DATABASE_URL` environment variable is essential to the
+operation of the program and should be set to the location
+of a database containing the recipes table.
 
 ### Expected behavior
 

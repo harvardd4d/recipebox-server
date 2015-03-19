@@ -115,27 +115,26 @@ func ServeError(renderer *render.Render, w http.ResponseWriter,
 	renderer.HTML(w, http.StatusOK, "error", m)
 }
 
+//	Get the port to serve on.
+//	The port is either set in environment variables
+//	or it is set equal to 8080 if it is not already set.
 func GetPort() string {
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "4747"
-		fmt.Println("[-] No PORT environment variable detected. Setting to ", port)
+		port = "8080"
+		fmt.Println("[recipebox] No PORT environment variable detected. Setting to ",
+			port)
 	}
 	return ":" + port
 }
 
-func main() {
-	// Get command line arguments
-	// portPtr := flag.Int("port", 8080, "the server port number")
-	// flag.Parse()
-	// portStr := fmt.Sprintf(":%v", *portPtr)
-
-	// Read database, check to see if we can open
-	// db_file := "testdb.sqlite"
-	// db, _ := sqlx.Open("sqlite3", db_file)
-
-	// Trying to figure out how to connect to heroku
+//	Connect to a database.
+//	The database path should be stored in the DATABASE_URL environment var
+func ConnectToDB() (recipedb *RecipeDatabase) {
 	db_file := os.Getenv("DATABASE_URL")
+	if db_file == "" {
+		panic("DATABASE_URL environment variable not set. Please see README.")
+	}
 	connection, _ := pq.ParseURL(db_file)
 	connection += " sslmode=verify-full"
 	db, _ := sqlx.Open("postgres", db_file)
@@ -144,7 +143,13 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("Unable to open database %v.  Error %v", connection, err.Error()))
 	}
-	recipedb := &RecipeDatabase{DB: db}
+	recipedb = &RecipeDatabase{DB: db}
+	return
+}
+
+func main() {
+	//	Connect to a database, get a *RecipeDatabase object
+	recipedb := ConnectToDB()
 
 	// Set up renderer.  Default template is templates/layout.tmpl
 	renderer := render.New(render.Options{
