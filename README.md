@@ -13,22 +13,28 @@ very useful modularity as a result of this workspace organization.
 
 `github.com/gorilla/pat`
 
-`github.com/jmoiron/sqlx`
-
-`github.com/mattn/go-sqlite3`
+`github.com/lib/pq`
 
 `github.com/unrolled/render`
 
-The above dependencies are necessary to build this project.  Run 
+`github.com/jmoiron/sqlx`
 
-    $ go get <package>
+The above dependencies are necessary to build this project. 
+We are using `godep` to manage dependencies - you may choose to
+install the dependencies locally using `go get` or by using
+the `godep` tool.  Run 
 
-to install them.  We are currently trying to find a better way to resolve
-dependencies.
+    $ go get github.com/kr/godep
+
+to install `godep` or a dependency.  
 
 ### Building
 
-Run `go build` in the recipebox-go-server folder to compile the code.
+Run `go build` in the recipebox-go-server folder to compile the code,
+assuming you have the dependencies set up manually.  If you are using
+`godep`, run `godep go build` to build the code without downloading the
+dependencies.
+
 This will create an executable named `recipebox-go-server`.  Run
 
     $ ./recipebox-go-server
@@ -62,10 +68,10 @@ wouldn't be here without you.
 
 `github.com/gorilla/pat`
 
-`github.com/jmoiron/sqlx`
-
-`github.com/mattn/go-sqlite3`
+`github.com/lib/pq`
 
 `github.com/unrolled/render`
+
+`github.com/jmoiron/sqlx`
 
 `github.com/johnotander/pixyll`

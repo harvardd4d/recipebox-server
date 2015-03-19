@@ -7,7 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-// The Recipe structure
+// The Recipe struct.  Represents a recipe.
 type Recipe struct {
 	Id             int    `json:"id"`
 	Name           string `json:"name"`
@@ -18,6 +18,12 @@ type Recipe struct {
 	Ingredientlist string `json:"ingredientlist"`
 	Instructions   string `json:"instructions"`
 	Picture        []byte `json:"picture"`
+}
+
+// Recipe Database struct.  Wraps a sqlx.DB.
+// A database of recipes.
+type RecipeDB struct {
+	DB *sqlx.DB
 }
 
 // Turns a Recipe into a JSON string
@@ -31,13 +37,8 @@ func (self *Recipe) ToJSON() (result string) {
 	return
 }
 
-// Recipe Database struct.  Wraps a sqlx.DB
-type RecipeDatabase struct {
-	DB *sqlx.DB
-}
-
 // Get a Recipe based on its id.
-func (this *RecipeDatabase) GetRecipe(id int) (recipe *Recipe, err error) {
+func (this *RecipeDB) GetRecipe(id int) (recipe *Recipe, err error) {
 	row := this.DB.QueryRowx("SELECT * FROM recipes WHERE id=$1", id)
 	recipe = new(Recipe)
 	err = row.StructScan(recipe)
@@ -45,7 +46,7 @@ func (this *RecipeDatabase) GetRecipe(id int) (recipe *Recipe, err error) {
 }
 
 // Get a Recipe based on a strict search
-func (this *RecipeDatabase) GetRecipesStrict(name string, cuisine,
+func (this *RecipeDB) GetRecipesStrict(name string, cuisine,
 	mealtype, season int) (recipes *list.List, err error) {
 
 	fmt.Printf("Getting %v %v %v %v", name, cuisine, mealtype, season)
@@ -75,7 +76,7 @@ func (this *RecipeDatabase) GetRecipesStrict(name string, cuisine,
 }
 
 // Get a Recipe based on a loose search.
-func (this *RecipeDatabase) GetRecipesLoose(name string, cuisine,
+func (this *RecipeDB) GetRecipesLoose(name string, cuisine,
 	mealtype, season int) (recipes *list.List, err error) {
 
 	recipes, err = this.GetRecipesStrict("%"+name+"%", cuisine, mealtype, season)
