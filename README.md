@@ -59,6 +59,32 @@ cuisine and returns them as a list of json strings seperated by newline characte
 A search is either strict or loose.  Strict searches must 
 have the name match exactly; weak searches can have the name be a substring.
 
+### Code details
+
+The directory is set up as so:
+
+    recipebox-server/
+    |
+    |-- recipe.go (Recipe and RecipeDB types and functions)
+    |-- appcontroller.go (Generic app controller type)
+    |-- mycontroller.go (RecipeBox app controller)
+    |-- server.go (RecipeBox server)
+    |
+    +-- webroot
+    |   +-- css
+    |       |-- pixyll.css
+    | 
+    +-- templates
+        +-- recipes
+        |   |-- recipe.tmpl (recipe view template)
+        |
+        |-- layout.tmpl (layout template)
+        |-- error.tmpl (error template)
+        |-- about.tmpl (about template)
+
+`server.go` handles routing.  `mycontroller.go` is the RecipeBox
+controller and handles rendering of html templates and RecipeDB querying.
+
 ### Thank you
 
 Thank you to the following projects for your amazing tools! RecipeBox
