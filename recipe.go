@@ -38,7 +38,7 @@ type RecipeDatabase struct {
 
 // Get a Recipe based on its id.
 func (this *RecipeDatabase) GetRecipe(id int) (recipe *Recipe, err error) {
-	row := this.DB.QueryRowx("SELECT * FROM recipes WHERE id=?", id)
+	row := this.DB.QueryRowx("SELECT * FROM recipes WHERE id=$1", id)
 	recipe = new(Recipe)
 	err = row.StructScan(recipe)
 	return
@@ -50,10 +50,10 @@ func (this *RecipeDatabase) GetRecipesStrict(name string, cuisine,
 
 	fmt.Printf("Getting %v %v %v %v", name, cuisine, mealtype, season)
 	rows, err := this.DB.Queryx("SELECT * "+
-		"FROM recipes WHERE name LIKE ? AND "+
-		"cuisine=? AND "+
-		"mealtype=? AND "+
-		"season=?",
+		"FROM recipes WHERE name LIKE $1 AND "+
+		"cuisine=$2 AND "+
+		"mealtype=$3 AND "+
+		"season=$4",
 		name, cuisine, mealtype, season)
 
 	if err != nil {

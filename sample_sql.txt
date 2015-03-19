@@ -1,0 +1,35 @@
+CREATE TABLE recipes (
+  name text NOT NULL, 
+  description text NOT NULL, 
+  cuisine integer NOT NULL, 
+  mealtype integer NOT NULL, 
+  season integer NOT NULL, 
+  ingredientlist text NOT NULL, 
+  instructions text NOT NULL, 
+  id integer PRIMARY KEY NOT NULL, 
+  picture bytea
+);
+
+INSERT INTO recipes VALUES (
+  'Chinese Broccoli',
+  'Lightly flavored Broccoli from the East',
+  1,
+  1,
+  1,
+  'Broccoli; Sesame oil',
+  'Steam the Broccoli.  Add sesame oil and serve.',
+  1,
+  NULL
+);
+
+INSERT INTO recipes VALUES (
+  'Toasted Toast',
+  'Toasty Toasted Toast',
+  1,
+  1,
+  1,
+  'Toast',
+  'Toast toast',
+  2,
+  NULL
+);
