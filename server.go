@@ -18,7 +18,7 @@ func GetPort() string {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
-		fmt.Println("[recipebox] No PORT environment variable detected. Setting to ",
+		fmt.Println("[recipebox] No PORT environment variable detected. Using port",
 			port)
 	}
 	return ":" + port
@@ -29,16 +29,26 @@ func GetPort() string {
 func ConnectToDB() (recipedb *RecipeDB) {
 	db_file := os.Getenv("DATABASE_URL")
 	if db_file == "" {
-		panic("DATABASE_URL environment variable not set. Please see README.")
+		panic("[recipebox] DATABASE_URL environment variable not set. Please see README.")
 	}
 	connection, _ := pq.ParseURL(db_file)
-	connection += " sslmode=verify-full"
-	db, _ := sqlx.Open("postgres", db_file)
+	// connection += " sslmode=disable"
 
+	// first, open database with sslmode=verify-full
+	db, _ := sqlx.Open("postgres", connection+" sslmode=verify-full")
 	err := db.Ping()
 	if err != nil {
-		panic(fmt.Sprintf("Unable to open database %v.  Error %v", connection, err.Error()))
+		fmt.Printf("[recipebox] Unable to open database, will retry with sslmode=disable.  Error %v\n",
+			err.Error())
+
+		db, _ := sqlx.Open("postgres", connection+" sslmode=disable")
+		err := db.Ping()
+		if err != nil {
+			panic(fmt.Sprintf("[recipebox] Unable to open database %v.  Error %v", connection, err.Error()))
+		}
 	}
+
+	fmt.Println("[recipebox] Recipes database opened successfully.")
 	recipedb = &RecipeDB{DB: db}
 	return
 }

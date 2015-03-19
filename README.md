@@ -28,16 +28,24 @@ the `godep` tool.  Run
 
 to install `godep` or a dependency.  
 
+### Setting up a database
+
+The recipebox-server app requires a recipes database. recipebox-server
+will read in the `DATABASE_URL` environment variable and attempt to
+connect to the database listed there.  The
+server is set up to use a postgres database. Please install `psql` and look at
+`sample_sql.txt` to setup a local postgres database.
+
 ### Building
 
-Run `go build` in the recipebox-go-server folder to compile the code,
+Run `go build` in the recipebox-server folder to compile the code,
 assuming you have the dependencies set up manually.  If you are using
 `godep`, run `godep go build` to build the code without downloading the
 dependencies.
 
-This will create an executable named `recipebox-go-server`.  Run
+This will create an executable named `recipebox-server`.  Run
 
-    $ ./recipebox-go-server
+    $ ./recipebox-server
 
 The server will attach itself to port 8080 by default unless
 the `PORT` environment variable is set.  In that case, the server
