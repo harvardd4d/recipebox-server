@@ -11,9 +11,8 @@ import (
 	"os"
 )
 
-// Get the port to serve on.
-// The port is either set in environment variables
-// or it is set equal to 8080 if it is not already set.
+// GetPort retrieves the port number set in the PORT environment variable.
+// If PORT does not exist, GetPort will return 8080.
 func GetPort() string {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -24,14 +23,14 @@ func GetPort() string {
 	return ":" + port
 }
 
-// Connect to a database.
+// ConnectToDB connects to a postgres database.
 // The database path should be stored in the DATABASE_URL environment var
 func ConnectToDB() (recipedb *RecipeDB) {
-	db_file := os.Getenv("DATABASE_URL")
-	if db_file == "" {
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
 		panic("[recipebox] DATABASE_URL environment variable not set. Please see README.")
 	}
-	connection, _ := pq.ParseURL(db_file)
+	connection, _ := pq.ParseURL(dbURL)
 	// connection += " sslmode=disable"
 
 	// first, open database with sslmode=verify-full

@@ -9,22 +9,22 @@ import (
 	"strings"
 )
 
-//  The RecipeBox controller object.
-//  The controller is responsible for querying the database
-//  as well as providing http.HandleFunc to handle URL requests.
+// MyController is the RecipeBox controller object.
+// The controller is responsible for querying the database
+// as well as providing http.HandleFunc to handle URL requests.
 type MyController struct {
 	AppController
 	*RecipeDB
 	*render.Render
 }
 
-// Creates an about page.
+// About creates the about page
 func (c *MyController) About(w http.ResponseWriter, r *http.Request) (err error) {
 	c.HTML(w, http.StatusOK, "about", nil)
 	return nil
 }
 
-// The action function helps with error handling in a controller.
+// Action helps with error handling in a controller.
 // Overriding the AppController errors to make use of the renderer
 func (c *MyController) Action(a Action) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -37,19 +37,19 @@ func (c *MyController) Action(a Action) http.HandlerFunc {
 	})
 }
 
-// Serves css files
+// CSS serves css files
 func (c *MyController) CSS(w http.ResponseWriter, r *http.Request) (err error) {
 	http.ServeFile(w, r, "./webroot/css/pixyll.css")
 	return nil
 }
 
-// Creates the homepage
+// Home creates the homepage
 func (c *MyController) Home(w http.ResponseWriter, r *http.Request) (err error) {
 	fmt.Fprintf(w, "You've reached the recipebox hotline")
 	return nil
 }
 
-// Renders a recipe by id
+// Recipe renders a recipe by id
 func (c *MyController) Recipe(w http.ResponseWriter, r *http.Request) (err error) {
 	id, _ := strconv.Atoi(r.URL.Query().Get(":id"))
 	recipe, err := c.GetRecipe(id)
@@ -59,7 +59,7 @@ func (c *MyController) Recipe(w http.ResponseWriter, r *http.Request) (err error
 	return
 }
 
-// Renders a raw JSON string of a recipe selected by id
+// RecipeJSON renders a raw JSON string of a recipe selected by id
 func (c *MyController) RecipeJSON(w http.ResponseWriter, r *http.Request) (err error) {
 	id, _ := strconv.Atoi(r.URL.Query().Get(":id"))
 	recipe, err := c.GetRecipe(id)
@@ -71,7 +71,7 @@ func (c *MyController) RecipeJSON(w http.ResponseWriter, r *http.Request) (err e
 	return
 }
 
-// Handles advanced JSON searches.
+// RecipeJSONAdvanced handles advanced JSON searches.
 // Searches are either strict or loose (by name)
 // and are done by season, mealtype, and cuisine.
 func (c *MyController) RecipeJSONAdvanced(w http.ResponseWriter, r *http.Request) (err error) {
