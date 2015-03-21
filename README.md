@@ -1,6 +1,11 @@
 ### recipebox-server
 
-The RecipeBox web server, written in Go
+The RecipeBox web server, written in Go.  Get the code with
+
+    $ go get github.com/harvardd4d/recipebox-server
+
+or, if you are new to go, read `detailed-setup-instructions.md` in this
+directory.
 
 ### Setup
 
