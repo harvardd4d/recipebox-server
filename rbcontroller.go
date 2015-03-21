@@ -39,7 +39,8 @@ func (c *RBController) About(w http.ResponseWriter, r *http.Request) (err error)
 func (c *RBController) Action(a Action) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if err := a(w, r); err != nil {
-			c.RenderError(w, 500, "Internal server error\n"+err.Error())
+			c.RenderError(w, http.StatusInternalServerError,
+				"Internal server error\n"+err.Error())
 		}
 	})
 }

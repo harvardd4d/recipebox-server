@@ -56,6 +56,11 @@ The `DATABASE_URL` environment variable is essential to the
 operation of the program and should be set to the location
 of a database containing the recipes table.
 
+### Testing
+
+Run `go test` to test. Current, will test the server without the existence
+of a postgres database.
+
 ### Expected behavior
 
 The following routes are currently implemented.

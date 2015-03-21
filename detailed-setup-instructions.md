@@ -18,6 +18,16 @@ follow the instructions in this [document](https://golang.org/doc/code.html)
 to setup your go workspace and the `$GOPATH` environment variable.
 All of your go code will live in your `$GOPATH` directory.
 
+### Get the recipebox-server code
+
+Now, you can download the source code by using the go tool.  Use
+
+    $ go get github.com/harvardd4d/recipebox-server
+
+to get the code.  Note that you can run this command from anywhere;
+go will automatically put the project into your workspace under
+`$GOROOT/src/github.com/harvardd4d/recipebox-server`.
+
 ### Installing godep or other dependencies.
 
 We use godep to manage our dependencies - you may choose to use godep
