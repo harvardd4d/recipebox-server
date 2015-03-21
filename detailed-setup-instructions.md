@@ -5,7 +5,7 @@ This is a detailed setup guide for setting up recipebox-server with Go.
 ### Installing Go
 
 First, you should install Go.  Download Go from here: 
-(https://golang.org/doc/install)[https://golang.org/doc/install].
+[https://golang.org/doc/install](https://golang.org/doc/install).
 You should select an installer package based on your operating system,
 and it should set up most of the necessary environment variables for you.
 
@@ -14,7 +14,7 @@ Verify that Go is installed by typing `go` at the command line (terminal).
 ### Setting up your go workspace
 
 All of your go code should reside in a workspace. Please
-follow the instructions in this (document)[https://golang.org/doc/code.html]
+follow the instructions in this [document](https://golang.org/doc/code.html)
 to setup your go workspace and the `$GOPATH` environment variable.
 All of your go code will live in your `$GOPATH` directory.
 
@@ -57,7 +57,7 @@ database of recipes.
 ### Setting up the local database
 
 Currently, recipebox-server uses a postgres database.  You should install
-psql for your system from (http://www.postgresql.org/)[http://www.postgresql.org/].
+psql for your system from [http://www.postgresql.org/](http://www.postgresql.org/).
 
 After you have installed psql, you should create a database on your
 local machine.  Do this with
