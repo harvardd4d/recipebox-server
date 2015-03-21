@@ -71,7 +71,7 @@ The directory is set up as so:
     |
     |-- recipe.go (Recipe and RecipeDB types and functions)
     |-- appcontroller.go (Generic app controller type)
-    |-- mycontroller.go (RecipeBox app controller)
+    |-- rbcontroller.go (RecipeBox app controller)
     |-- server.go (RecipeBox server)
     |
     +-- webroot
@@ -86,7 +86,7 @@ The directory is set up as so:
         |-- error.tmpl (error template)
         |-- about.tmpl (about template)
 
-`server.go` handles routing.  `mycontroller.go` is the RecipeBox
+`server.go` handles routing.  `rbcontroller.go` is the RecipeBox
 controller and handles rendering of html templates and RecipeDB querying.
 
 ### Todo

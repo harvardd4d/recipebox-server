@@ -64,7 +64,7 @@ func main() {
 
 	// Set up the controller. The controller is responsible for
 	// rendering, database queries, and handling requests
-	c := &MyController{Render: renderer, RecipeDB: recipedb}
+	c := &RBController{Render: renderer, RecipeDB: recipedb}
 
 	// Set up the router and associate routes with the controller
 	router := pat.New()
