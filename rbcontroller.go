@@ -149,7 +149,7 @@ func (c *RBController) Static(w http.ResponseWriter, r *http.Request) (err error
 	path := "./webroot/" + vars["path"]
 
 	if PathExists(path) {
-		fmt.Println("stuff")
+		http.ServeFile(w, r, path)
 	} else {
 		c.RenderError(w, 404, "Sorry, this page was not found.")
 	}
