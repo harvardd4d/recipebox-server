@@ -72,6 +72,7 @@ searches for recipes that match name, season, mealtype, and
 cuisine and returns them as a list of json strings seperated by newline characters.  
 A search is either strict or loose.  Strict searches must 
 have the name match exactly; weak searches can have the name be a substring.
+4. `GET /about` displays about text.
 
 ### Code details
 

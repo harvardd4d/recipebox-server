@@ -45,15 +45,21 @@ func (c *RBController) Action(a Action) http.HandlerFunc {
 	})
 }
 
-// CSS serves css files
-func (c *RBController) CSS(w http.ResponseWriter, r *http.Request) (err error) {
-	http.ServeFile(w, r, "./webroot/css/pixyll.css")
-	return nil
-}
+// // CSS serves css files
+// func (c *RBController) CSS(w http.ResponseWriter, r *http.Request) (err error) {
+// 	http.ServeFile(w, r, "./webroot/css/pixyll.css")
+// 	return nil
+// }
 
 // Home creates the homepage
 func (c *RBController) Home(w http.ResponseWriter, r *http.Request) (err error) {
-	fmt.Fprintf(w, "You've reached the recipebox hotline")
+	stats := map[string]string{
+		"nRecipes":    "891",
+		"nVolunteers": "200,000",
+		"nCountries":  "100+",
+		"nYears":      "54",
+	}
+	c.HTML(w, http.StatusOK, "home", stats)
 	return nil
 }
 
@@ -120,4 +126,13 @@ func (c *RBController) RecipeJSONAdvanced(w http.ResponseWriter, r *http.Request
 		fmt.Fprintf(w, "%v", err.Error())
 	}
 	return
+}
+
+// Static serves static pages
+func (c *RBController) Static(w http.ResponseWriter, r *http.Request) (err error) {
+	if r.URL.Path == "/" {
+		return c.Home(w, r)
+	}
+	http.ServeFile(w, r, "./webroot"+r.URL.Path)
+	return nil
 }

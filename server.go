@@ -8,6 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"github.com/unrolled/render"
+	//"net/http"
 	"os"
 )
 
@@ -68,12 +69,13 @@ func main() {
 
 	// Set up the router and associate routes with the controller
 	router := pat.New()
-	router.Get("/css/pixyll.css", c.Action(c.CSS))
+	// router.Get("/css/pixyll.css", c.Action(c.CSS))
 	router.Post("/recipes/jsonsearch", c.Action(c.RecipeJSONAdvanced))
 	router.Get("/recipes/{id:[0-9]+}/json", c.Action(c.RecipeJSON))
 	router.Get("/recipes/{id:[0-9]+}", c.Action(c.Recipe))
 	router.Get("/about", c.Action(c.About))
-	router.Get("/", c.Action(c.Home))
+	router.Get("/index", c.Action(c.Home))
+	router.Get("/", c.Action(c.Static))
 
 	// Setting up middleware (server, logging layer)
 	n := negroni.Classic()
