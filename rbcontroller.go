@@ -4,8 +4,10 @@ import (
 	"container/list"
 	"database/sql"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -19,6 +21,18 @@ type RBController struct {
 	*render.Render
 }
 
+// --------------------------------------------
+//              HELPER FUNCTIONS
+// --------------------------------------------
+
+func PathExists(filename string) bool {
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		return false
+	} else {
+		return true
+	}
+}
+
 // RenderError uses RBController's renderer to create an error
 // based off of a template.
 func (c *RBController) RenderError(w http.ResponseWriter, errorCode int, msg string) {
@@ -27,6 +41,10 @@ func (c *RBController) RenderError(w http.ResponseWriter, errorCode int, msg str
 	m["error_msg"] = msg
 	c.HTML(w, errorCode, "error", m)
 }
+
+// --------------------------------------------
+//              ACTIONS AND HANDLERS
+// --------------------------------------------
 
 // About creates the about page
 func (c *RBController) About(w http.ResponseWriter, r *http.Request) (err error) {
@@ -59,7 +77,8 @@ func (c *RBController) Home(w http.ResponseWriter, r *http.Request) (err error) 
 
 // Recipe renders a recipe by id
 func (c *RBController) Recipe(w http.ResponseWriter, r *http.Request) (err error) {
-	id, _ := strconv.Atoi(r.URL.Query().Get(":id"))
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
 	recipe, err := c.GetRecipe(id)
 	if err == nil {
 		c.HTML(w, http.StatusOK, "recipes/recipe", recipe)
@@ -73,7 +92,8 @@ func (c *RBController) Recipe(w http.ResponseWriter, r *http.Request) (err error
 
 // RecipeJSON renders a raw JSON string of a recipe selected by id
 func (c *RBController) RecipeJSON(w http.ResponseWriter, r *http.Request) (err error) {
-	id, _ := strconv.Atoi(r.URL.Query().Get(":id"))
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
 	recipe, err := c.GetRecipe(id)
 	if err == nil {
 		c.JSON(w, http.StatusOK, recipe)
@@ -87,6 +107,7 @@ func (c *RBController) RecipeJSON(w http.ResponseWriter, r *http.Request) (err e
 // RecipeJSONAdvanced handles advanced JSON searches.
 // Searches are either strict or loose (by name)
 // and are done by season, mealtype, and cuisine.
+// TODO: use MUX.  this function currently doesn't work.
 func (c *RBController) RecipeJSONAdvanced(w http.ResponseWriter, r *http.Request) (err error) {
 	r.ParseForm()
 	strict, err := strconv.Atoi(r.FormValue("strict"))
@@ -124,9 +145,13 @@ func (c *RBController) RecipeJSONAdvanced(w http.ResponseWriter, r *http.Request
 
 // Static serves static pages
 func (c *RBController) Static(w http.ResponseWriter, r *http.Request) (err error) {
-	if r.URL.Path == "/" {
-		return c.Home(w, r)
+	vars := mux.Vars(r)
+	path := "./webroot/" + vars["path"]
+
+	if PathExists(path) {
+		fmt.Println("stuff")
+	} else {
+		c.RenderError(w, 404, "Sorry, this page was not found.")
 	}
-	http.ServeFile(w, r, "./webroot"+r.URL.Path)
 	return nil
 }

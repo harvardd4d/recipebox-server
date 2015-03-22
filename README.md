@@ -104,7 +104,6 @@ controller and handles rendering of html templates and RecipeDB querying.
 ### Todo
 
 - More testing
-- Move from gorilla/pat to gorilla/mux
 - Recipes home page
 - Recipes search by category
 - User login (Google Authentication)

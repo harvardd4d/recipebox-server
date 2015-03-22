@@ -4,11 +4,10 @@ import (
 	_ "database/sql"
 	"fmt"
 	"github.com/codegangsta/negroni"
-	"github.com/gorilla/pat"
+	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"github.com/unrolled/render"
-	//"net/http"
 	"os"
 )
 
@@ -68,13 +67,14 @@ func main() {
 	c := &RBController{Render: renderer, RecipeDB: recipedb}
 
 	// Set up the router and associate routes with the controller
-	router := pat.New()
-	router.Post("/recipes/jsonsearch", c.Action(c.RecipeJSONAdvanced))
-	router.Get("/recipes/{id:[0-9]+}/json", c.Action(c.RecipeJSON))
-	router.Get("/recipes/{id:[0-9]+}", c.Action(c.Recipe))
-	router.Get("/about", c.Action(c.About))
-	router.Get("/index", c.Action(c.Home))
-	router.Get("/", c.Action(c.Static))
+	router := mux.NewRouter()
+	// router.Post("/recipes/jsonsearch", c.Action(c.RecipeJSONAdvanced))
+	router.HandleFunc("/recipes/{id:[0-9]+}/json", c.Action(c.RecipeJSON))
+	router.HandleFunc("/recipes/{id:[0-9]+}", c.Action(c.Recipe))
+	router.HandleFunc("/about/", c.Action(c.About))
+	router.HandleFunc("/index/", c.Action(c.Home))
+	router.HandleFunc("/", c.Action(c.Home))
+	router.HandleFunc("/{path:.+}", c.Action(c.Static))
 
 	// Setting up middleware (server, logging layer)
 	n := negroni.Classic()
