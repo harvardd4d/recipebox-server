@@ -69,7 +69,6 @@ func main() {
 
 	// Set up the router and associate routes with the controller
 	router := pat.New()
-	// router.Get("/css/pixyll.css", c.Action(c.CSS))
 	router.Post("/recipes/jsonsearch", c.Action(c.RecipeJSONAdvanced))
 	router.Get("/recipes/{id:[0-9]+}/json", c.Action(c.RecipeJSON))
 	router.Get("/recipes/{id:[0-9]+}", c.Action(c.Recipe))

@@ -5,7 +5,8 @@ The RecipeBox web server, written in Go.  Get the code with
     $ go get github.com/harvardd4d/recipebox-server
 
 or, if you are new to go, read `detailed-setup-instructions.md` in this
-directory.
+directory. View a live preview at 
+[pc-recipebox.herokuapp.com](pc-recipebox.herokuapp.com).
 
 ### Setup
 
@@ -102,7 +103,13 @@ controller and handles rendering of html templates and RecipeDB querying.
 
 ### Todo
 
-- Testing
+- More testing
+- Move from gorilla/pat to gorilla/mux
+- Recipes home page
+- Recipes search by category
+- User login (Google Authentication)
+- Some way for users to keep track of recipes
+- Saving recipes to database
 
 ### Thank you
 

@@ -45,12 +45,6 @@ func (c *RBController) Action(a Action) http.HandlerFunc {
 	})
 }
 
-// // CSS serves css files
-// func (c *RBController) CSS(w http.ResponseWriter, r *http.Request) (err error) {
-// 	http.ServeFile(w, r, "./webroot/css/pixyll.css")
-// 	return nil
-// }
-
 // Home creates the homepage
 func (c *RBController) Home(w http.ResponseWriter, r *http.Request) (err error) {
 	stats := map[string]string{
