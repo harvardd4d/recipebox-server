@@ -63,6 +63,12 @@ func (c *RBController) Action(a Action) http.HandlerFunc {
 	})
 }
 
+// Contact creates contact page
+func (c *RBController) Contact(w http.ResponseWriter, r *http.Request) (err error) {
+	c.HTML(w, http.StatusOK, "contact", nil)
+	return nil
+}
+
 // Home creates the homepage
 func (c *RBController) Home(w http.ResponseWriter, r *http.Request) (err error) {
 	stats := map[string]string{

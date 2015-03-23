@@ -72,9 +72,11 @@ func main() {
 	router.HandleFunc("/recipes/{id:[0-9]+}/json", c.Action(c.RecipeJSON))
 	router.HandleFunc("/recipes/{id:[0-9]+}", c.Action(c.Recipe))
 	router.HandleFunc("/about/", c.Action(c.About))
+	router.HandleFunc("/contact/", c.Action(c.Contact))
 	router.HandleFunc("/index/", c.Action(c.Home))
 	router.HandleFunc("/", c.Action(c.Home))
 	router.HandleFunc("/{path:.+}", c.Action(c.Static))
+
 
 	// Setting up middleware (server, logging layer)
 	n := negroni.Classic()
