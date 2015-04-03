@@ -1,0 +1,44 @@
+<!-- templates/recipes/recipe.tmpl -->
+<h1 class="h2"> Editing Recipe {{.ID}} </h1>
+
+<!-- <span class="post-meta small"> {{.Cuisine}} | {{.Mealtype}} | {{.Season}} </span>
+<p> {{.Description}} </p>
+<h2 class="h2">Ingredients</h2>
+<p> {{.Ingredientlist}} </p>
+<h2>Instructions</h2>
+<p> {{.Instructions}} </p> -->
+
+<form action="/recipes/{{.ID}}/save/" method="POST">
+  <h5>Recipe Name</h5>
+  <div>
+    <textarea name="name" rows="1" cols="80">{{printf "%s" .Name}}</textarea>
+  </div>
+  <h5>Cuisine</h5>
+  <div>
+    <input type="number" name="cuisine" value={{printf "%d" .Cuisine}}>
+  </div>
+  <h5>Mealtype</h5>
+  <div>
+    <input type="number" name="mealtype" value={{printf "%d" .Mealtype}}>
+    <!-- <input type="checkbox" name="mealtype" value="1"{{if MealIs "Breakfast" .Mealtype}} checked {{end}}>Breakfast<br>
+    <input type="checkbox" name="mealtype" value="2"{{if MealIs "Lunch" .Mealtype}} checked {{end}}>Lunch<br>
+    <input type="checkbox" name="mealtype" value="4"{{if MealIs "Dinner" .Mealtype}} checked {{end}}>Dinner<br>
+ -->  
+  </div>
+  <h5>Season</h5>
+    <input type="number" name="season" value={{printf "%d" .Season}}>
+<!--     <input type="checkbox" name="season" value="1"{{if SeasonIs "Spring" .Season}} checked {{end}}>Spring<br>
+    <input type="checkbox" name="season" value="2"{{if SeasonIs "Summer" .Season}} checked {{end}}>Summer<br>
+    <input type="checkbox" name="season" value="4"{{if SeasonIs "Fall" .Season}} checked {{end}}>Fall<br>
+    <input type="checkbox" name="season" value="8"{{if SeasonIs "Winter" .Season}} checked {{end}}>Winter<br> -->
+  <h5>Ingredients</h5>
+  <div>Please put semicolons between each ingredient.</div>
+  <div>
+    <textarea name="ingredients" rows="10" cols="80">{{printf "%s" .Ingredientlist}}</textarea>
+  </div>
+  <h5>Instructions<h5>
+  <div>
+    <textarea name="instructions" rows="20" cols="80">{{printf "%s" .Instructions}}</textarea>
+  </div>
+<div><input type="submit" value="Save"></div>
+</form>
