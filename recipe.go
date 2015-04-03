@@ -1,37 +1,32 @@
 package main
 
 import (
-	"container/list"
 	"encoding/json"
-	"fmt"
-	"github.com/jmoiron/sqlx"
 	"strings"
-)
-
-const (
-	Breakfast = 1 << iota
-	Lunch     = 1 << iota
-	Dinner    = 1 << iota
-)
-
-const (
-	Spring = 1 << iota
-	Summer = 1 << iota
-	Fall   = 1 << iota
-	Winter = 1 << iota
 )
 
 var (
 	Meals = map[int]string{
-		Breakfast: "Breakfast",
-		Lunch:     "Lunch",
-		Dinner:    "Dinner",
+		1: "Breakfast",
+		2: "Lunch",
+		4: "Dinner",
+	}
+	MealsToInt = map[string]int{
+		"Breakfast": 1,
+		"Lunch":     2,
+		"Dinner":    4,
 	}
 	Seasons = map[int]string{
-		Spring: "Spring",
-		Summer: "Summer",
-		Winter: "Winter",
-		Fall:   "Fall",
+		1: "Spring",
+		2: "Summer",
+		4: "Winter",
+		8: "Fall",
+	}
+	SeasonsToInt = map[string]int{
+		"Spring": 1,
+		"Summer": 2,
+		"Winter": 4,
+		"Fall":   8,
 	}
 )
 
@@ -48,11 +43,6 @@ type Recipe struct {
 	Picture        []byte `json:"picture"`
 }
 
-// RecipeDB represents a recipe database. Wraps a sqlx.DB.
-type RecipeDB struct {
-	DB *sqlx.DB
-}
-
 // ToJSON turns a Recipe into a JSON string
 func (recipe *Recipe) ToJSON() (result string) {
 	resultBytes, err := json.Marshal(recipe)
@@ -61,64 +51,6 @@ func (recipe *Recipe) ToJSON() (result string) {
 	} else {
 		result = string(resultBytes)
 	}
-	return
-}
-
-// GetRecipe gets a Recipe based on its id.
-func (recipeDB *RecipeDB) GetRecipe(id int) (recipe *Recipe, err error) {
-	row := recipeDB.DB.QueryRowx("SELECT * FROM recipes WHERE id=$1", id)
-	recipe = new(Recipe)
-	err = row.StructScan(recipe)
-	return
-}
-
-// EditRecipe takes an edited recipe and inserts in into the database
-func (recipeDB *RecipeDB) EditRecipe(recipe *Recipe) (err error) {
-	// 8 things, TODO insert picture
-	update := `UPDATE recipes SET ` +
-		`name=$2,description=$3,cuisine=$4,mealtype=$5,` +
-		`season=$6, ingredientlist=$7, instructions=$8 WHERE id=$1`
-	_, err = recipeDB.DB.Exec(update, recipe.ID, recipe.Name,
-		recipe.Description, recipe.Cuisine, recipe.Mealtype, recipe.Season,
-		recipe.Ingredientlist, recipe.Instructions)
-	return err
-}
-
-// GetRecipesStrict gets a Recipe based on a strict search
-func (recipeDB *RecipeDB) GetRecipesStrict(name string, cuisine,
-	mealtype, season int) (recipes *list.List, err error) {
-
-	fmt.Printf("Getting %v %v %v %v", name, cuisine, mealtype, season)
-	rows, err := recipeDB.DB.Queryx(`SELECT * `+
-		`FROM recipes WHERE name LIKE $1 AND `+
-		`cuisine=$2 AND `+
-		`mealtype=$3 AND `+
-		`season=$4`,
-		name, cuisine, mealtype, season)
-
-	if err != nil {
-		fmt.Printf("[WARNING] in GetRecipesStrict: %s", err.Error())
-	}
-
-	recipes = list.New()
-
-	for rows.Next() {
-		recipe := new(Recipe)
-		err = rows.StructScan(recipe)
-		if err == nil {
-			recipes.PushBack(recipe)
-		} else {
-			fmt.Printf("[WARNING] StructScan: %s", err.Error())
-		}
-	}
-	return
-}
-
-// GetRecipesLoose gets a Recipe based on a loose search.
-func (recipeDB *RecipeDB) GetRecipesLoose(name string, cuisine,
-	mealtype, season int) (recipes *list.List, err error) {
-
-	recipes, err = recipeDB.GetRecipesStrict("%"+name+"%", cuisine, mealtype, season)
 	return
 }
 
@@ -132,42 +64,50 @@ func ParseIngredients(ingredients string) []string {
 	return things
 }
 
-// ParseMealtype returns a list of mealtypes (strings) based on meal
-func ParseMealtype(mealtype int) []string {
-	return nil
-}
-
-// ParseSeason returns a list of seasons(string) based on season
-func ParseSeason(season int) []string {
-	return nil
-}
-
-// MealIs returns whether or not the mealtype is a particular meal
-func MealIs(meal string, mealtype int) bool {
-	switch meal {
-	default:
-		return false
-	case "Breakfast":
-		return mealtype&Breakfast > 0
-	case "Lunch":
-		return mealtype&Lunch > 0
-	case "Dinner":
-		return mealtype&Dinner > 0
+// ParseMealtype returns a map of whether or not the number
+// represents a particular mealtype.
+// This map is a map from meal to bool (t/f)
+func ParseMealtype(mealtype int) map[string]bool {
+	result := make(map[string]bool)
+	for meal, name := range Meals {
+		if meal&mealtype > 0 {
+			result[name] = true
+		} else {
+			result[name] = false
+		}
 	}
+	return result
 }
 
-// SeasonIs returns whether or not the season is a particular season
-func SeasonIs(season string, seasontype int) bool {
-	switch season {
-	default:
-		return false
-	case "Spring":
-		return seasontype&Spring > 0
-	case "Summer":
-		return seasontype&Summer > 0
-	case "Fall":
-		return seasontype&Fall > 0
-	case "Winter":
-		return seasontype&Winter > 0
+// ParseSeason returns a map of whether or not the number
+// represents a particular season.
+// The map maps seasons (string) to bool
+func ParseSeason(season int) map[string]bool {
+	result := make(map[string]bool)
+	for s, name := range Seasons {
+		if s&season > 0 {
+			result[name] = true
+		} else {
+			result[name] = false
+		}
 	}
+	return result
+}
+
+// EncodeMealtype will encode a mealtype int
+// based on the meals present.
+func EncodeMealtype(meals []string) (mealtype int) {
+	for _, m := range meals {
+		mealtype += MealsToInt[m]
+	}
+	return
+}
+
+// EncodeSeason will encode a season int
+// based on the seasons present.
+func EncodeSeason(seasons []string) (season int) {
+	for _, s := range seasons {
+		season += SeasonsToInt[s]
+	}
+	return
 }

@@ -183,12 +183,18 @@ func (c *RBController) SaveRecipe(w http.ResponseWriter, r *http.Request) (err e
 
 	name := r.PostFormValue(`name`)
 	cuisine, err := strconv.Atoi(r.PostFormValue(`cuisine`))
-	mealtype, err1 := strconv.Atoi(r.PostFormValue(`mealtype`))
-	season, err2 := strconv.Atoi(r.PostFormValue(`season`))
+
+	// Get the mealtype and season encoded ints
+	mealtype := EncodeMealtype(r.Form[`mealtype`])
+	season := EncodeSeason(r.Form[`season`])
+
+	// get everything else
+	description := r.PostFormValue(`description`)
 	ingredients := r.PostFormValue(`ingredients`)
 	instructions := r.PostFormValue(`instructions`)
 
-	if err != nil || err1 != nil || err2 != nil {
+	// TODO better error handling
+	if err != nil {
 		fmt.Println("[WARNING] Something went wrong in SaveRecipe")
 		c.RenderError(w, 500, "Sorry, something went wrong.")
 		return
@@ -196,7 +202,8 @@ func (c *RBController) SaveRecipe(w http.ResponseWriter, r *http.Request) (err e
 
 	// everything OK: build the recipe, and send it to the database
 	recipe := Recipe{ID: id, Name: name, Cuisine: cuisine, Mealtype: mealtype,
-		Season: season, Ingredientlist: ingredients, Instructions: instructions}
+		Season: season, Description: description, Ingredientlist: ingredients,
+		Instructions: instructions}
 	err = c.RecipeDB.EditRecipe(&recipe)
 
 	if err == nil {

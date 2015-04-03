@@ -2,18 +2,24 @@
 <h1 class="h1"> {{.Name}} </h1>
 <span class="post-meta small"> 
   Cuisine: {{.Cuisine}} | Meals:
-  {{if MealIs "Breakfast" .Mealtype}}Breakfast{{end}}
-  {{if MealIs "Lunch" .Mealtype}}Lunch{{end}}
-  {{if MealIs "Dinner" .Mealtype}}Dinner{{end}} | Seasons: 
-  {{if SeasonIs "Spring" .Season}}Spring{{end}}
-  {{if SeasonIs "Summer" .Season}}Summer{{end}}
-  {{if SeasonIs "Fall" .Season}}Fall{{end}}
-  {{if SeasonIs "Winter" .Season}}Winter{{end}}
+  {{range $meal, $exists := ParseMeal .Mealtype}}
+    {{if $exists}}
+      {{printf "%s" $meal}}
+    {{end}}
+  {{end}} | Seasons: 
+  {{range $s, $exists := ParseSeason .Season}}
+    {{if $exists}}
+      {{printf "%s" $s}}
+    {{end}}
+  {{end}}
   </span>
 <p> {{.Description}} </p>
 <h2 class="h2">Ingredients</h2>
+  <p>
   {{range $index, $element := ParseIngredients .Ingredientlist}} 
-    <p>{{printf "%s" $element}}</p> 
+    {{if ne $index 0}}<br>{{end}}
+    {{printf "%s" $element}}
   {{end}}
+  </p>
 <h2>Instructions</h2>
 <p> {{.Instructions}} </p>
