@@ -158,7 +158,6 @@ func (c *RBController) RecipeJSONAdvanced(w http.ResponseWriter, r *http.Request
 
 	// slice of jsons
 	jsons := make([]string, recipes.Len())
-	request := ""
 
 	if err == nil {
 		index := 0
@@ -167,7 +166,7 @@ func (c *RBController) RecipeJSONAdvanced(w http.ResponseWriter, r *http.Request
 			jsons[index] = rec.ToJSON()
 			index++
 		}
-		request = strings.Join(jsons, "\n")
+		request := strings.Join(jsons, "\n")
 		fmt.Fprintf(w, request)
 	} else {
 		fmt.Fprintf(w, "%v", err.Error())
@@ -190,10 +189,12 @@ func (c *RBController) SaveRecipe(w http.ResponseWriter, r *http.Request) (err e
 	instructions := r.PostFormValue(`instructions`)
 
 	if err != nil || err1 != nil || err2 != nil {
-		fmt.Println("Something went wrong in SaveRecipe")
+		fmt.Println("[WARNING] Something went wrong in SaveRecipe")
+		c.RenderError(w, 500, "Sorry, something went wrong.")
 		return
 	}
 
+	// everything OK: build the recipe, and send it to the database
 	recipe := Recipe{ID: id, Name: name, Cuisine: cuisine, Mealtype: mealtype,
 		Season: season, Ingredientlist: ingredients, Instructions: instructions}
 	err = c.RecipeDB.EditRecipe(&recipe)
