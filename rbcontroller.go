@@ -80,8 +80,18 @@ func (c *RBController) EditRecipe(w http.ResponseWriter, r *http.Request) (err e
 	vars := mux.Vars(r)
 	id, _ := strconv.Atoi(vars["id"])
 	recipe, err := c.GetRecipe(id)
+
 	if err == nil {
-		c.HTML(w, http.StatusOK, "recipes/edit", recipe)
+		// pass data to render
+		data := struct {
+			*Recipe
+			NewRecipe bool
+		}{
+			recipe,
+			false,
+		}
+
+		c.HTML(w, http.StatusOK, "recipes/edit", data)
 	} else if err == sql.ErrNoRows {
 		// this means that the recipe wasn't found, so we should return a 404 error
 		c.RenderError(w, 404, "Sorry, your page wasn't found")
@@ -102,8 +112,20 @@ func (c *RBController) Home(w http.ResponseWriter, r *http.Request) (err error) 
 	return nil
 }
 
+// NewRecipe serves a form to create a new recipe using
+// the recipes/edit template.
 func (c *RBController) NewRecipe(w http.ResponseWriter, r *http.Request) (err error) {
-	c.RenderError(w, 404, "New page coming soon!")
+	// build data with anonymous struct
+	data := struct {
+		*Recipe
+		NewRecipe bool
+	}{
+		new(Recipe),
+		true,
+	}
+
+	// pass data to render
+	c.HTML(w, http.StatusOK, "recipes/edit", data)
 	return nil
 }
 
@@ -174,13 +196,10 @@ func (c *RBController) RecipeJSONAdvanced(w http.ResponseWriter, r *http.Request
 	return
 }
 
-// SaveRecipe takes a POST request from the /recipes/edit/ form
+// SaveRecipe takes a POST request from the /recipes/id/edit/ form
 // and saves the recipe back into the database.
 func (c *RBController) SaveRecipe(w http.ResponseWriter, r *http.Request) (err error) {
-	vars := mux.Vars(r)
-	idStr := vars["id"]
-	id, _ := strconv.Atoi(idStr)
-
+	// Get properties
 	name := r.PostFormValue(`name`)
 	cuisine, err := strconv.Atoi(r.PostFormValue(`cuisine`))
 
@@ -201,13 +220,25 @@ func (c *RBController) SaveRecipe(w http.ResponseWriter, r *http.Request) (err e
 	}
 
 	// everything OK: build the recipe, and send it to the database
-	recipe := Recipe{ID: id, Name: name, Cuisine: cuisine, Mealtype: mealtype,
+	recipe := Recipe{ID: 0, Name: name, Cuisine: cuisine, Mealtype: mealtype,
 		Season: season, Description: description, Ingredientlist: ingredients,
 		Instructions: instructions}
-	err = c.RecipeDB.EditRecipe(&recipe)
+
+	// if we don't have the id string, then this is a new request.
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	id := 0
+
+	if idStr != "" {
+		id, _ = strconv.Atoi(idStr)
+		recipe.ID = id
+		err = c.RecipeDB.UpdateRecipe(&recipe)
+	} else {
+		id, err = c.RecipeDB.NewRecipe(&recipe)
+	}
 
 	if err == nil {
-		http.Redirect(w, r, "/recipes/"+idStr+"/", http.StatusFound)
+		http.Redirect(w, r, "/recipes/"+fmt.Sprintf("%v", id)+"/", http.StatusFound)
 	}
 	return
 }

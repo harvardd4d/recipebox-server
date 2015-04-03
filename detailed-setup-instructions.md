@@ -86,13 +86,14 @@ After you have logged in, create a local recipes table with (copy and paste)
       season integer NOT NULL, 
       ingredientlist text NOT NULL, 
       instructions text NOT NULL, 
-      id integer PRIMARY KEY NOT NULL, 
+      id serial PRIMARY KEY, 
       picture bytea
     );
 
 and two sample recipes
 
-    INSERT INTO recipes VALUES (
+    INSERT INTO recipes (name, description, cuisine, mealtype,
+      season, ingredientlist, instructions, picture) VALUES (
       'Chinese Broccoli',
       'Lightly flavored Broccoli from the East',
       1,
@@ -100,11 +101,12 @@ and two sample recipes
       1,
       'Broccoli; Sesame oil',
       'Steam the Broccoli.  Add sesame oil and serve.',
-      1,
       NULL
     );
 
-    INSERT INTO recipes VALUES (
+    INSERT INTO recipes (name, description, cuisine, mealtype,
+      season, ingredientlist, instructions, picture) 
+      VALUES (
       'Toasted Toast',
       'Toasty Toasted Toast',
       1,
@@ -112,9 +114,8 @@ and two sample recipes
       1,
       'Toast',
       'Toast toast',
-      2,
       NULL
-    );
+    ) RETURNING id;
 
 ### Set your DATABASE_URL environment variable
 

@@ -1,16 +1,20 @@
 <!-- templates/recipes/recipe.tmpl -->
-<h1 class="h2"> Editing Recipe {{.ID}} </h1>
-
-<form action="/recipes/{{.ID}}/save/" method="POST">
+{{if .NewRecipe}}
+  <h1 class="h2">New Recipe</h1>
+  <form action="/recipes/new/save/" method="POST">
+{{else}}
+  <h1 class="h2">Editing Recipe</h1>
+  <form action="/recipes/{{.ID}}/save/" method="POST">
+{{end}}
 
   <h5>Recipe Name</h5>
   <div>
-    <input type="text" name="name" value={{printf "%s" .Name}}>
+    <input type="text" name="name" required value={{printf "%s" .Name}} >
   </div>
 
   <h5>Cuisine</h5>
   <div>
-    <input type="number" name="cuisine" value={{printf "%d" .Cuisine}}>
+    <input type="number" name="cuisine" value={{printf "%d" .Cuisine}} required>
   </div>
 
   <h5>Mealtype</h5>
@@ -31,18 +35,18 @@
 
   <h5>Description</h5>
   <div>
-    <textarea name="description" rows="10" cols="80">{{printf "%s" .Description}}</textarea>
+    <textarea name="description" rows="10" cols="80" required>{{printf "%s" .Description}}</textarea>
   </div>
 
   <h5>Ingredients</h5>
   <div>Please put semicolons between each ingredient.</div>
   <div>
-    <textarea name="ingredients" rows="10" cols="80">{{printf "%s" .Ingredientlist}}</textarea>
+    <textarea name="ingredients" rows="10" cols="80" required>{{printf "%s" .Ingredientlist}}</textarea>
   </div>
 
   <h5>Instructions<h5>
   <div>
-    <textarea name="instructions" rows="20" cols="80">{{printf "%s" .Instructions}}</textarea>
+    <textarea name="instructions" rows="20" cols="80" required>{{printf "%s" .Instructions}}</textarea>
   </div>
 <div><input type="submit" value="Save"></div>
 </form>

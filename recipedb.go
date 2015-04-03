@@ -19,8 +19,8 @@ func (recipeDB *RecipeDB) GetRecipe(id int) (recipe *Recipe, err error) {
 	return
 }
 
-// EditRecipe takes an edited recipe and inserts in into the database
-func (recipeDB *RecipeDB) EditRecipe(recipe *Recipe) (err error) {
+// UpdateRecipe takes an edited recipe and inserts in into the database
+func (recipeDB *RecipeDB) UpdateRecipe(recipe *Recipe) (err error) {
 	// 8 things, TODO insert picture
 	update := `UPDATE recipes SET ` +
 		`name=$2,description=$3,cuisine=$4,mealtype=$5,` +
@@ -29,6 +29,33 @@ func (recipeDB *RecipeDB) EditRecipe(recipe *Recipe) (err error) {
 		recipe.Description, recipe.Cuisine, recipe.Mealtype, recipe.Season,
 		recipe.Ingredientlist, recipe.Instructions)
 	return err
+}
+
+// NewRecipe makes a new recipe and inserts it into the database
+func (recipeDB *RecipeDB) NewRecipe(recipe *Recipe) (newID int, err error) {
+	// 8 things, TODO insert picture
+	insert := `INSERT INTO recipes ` +
+		`(name, description, cuisine, mealtype, season,` +
+		` ingredientlist, instructions) ` +
+		`VALUES ($1,$2,$3,$4,$5,$6,$7)` +
+		`RETURNING id`
+
+	// returns an primary key
+	rows, err := recipeDB.DB.Queryx(insert, recipe.Name,
+		recipe.Description, recipe.Cuisine, recipe.Mealtype, recipe.Season,
+		recipe.Ingredientlist, recipe.Instructions)
+
+	// return the primary key as well
+	if err == nil {
+		// only has one row
+		rows.Next()
+		someID := 0
+		err = rows.Scan(&someID)
+		if err == nil {
+			newID = someID
+		}
+	}
+	return
 }
 
 // GetRecipesStrict gets a Recipe based on a strict search

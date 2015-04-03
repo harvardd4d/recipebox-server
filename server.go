@@ -86,6 +86,7 @@ func main() {
 	router.HandleFunc("/recipes/{id:[0-9]+}/edit/", c.Action(c.EditRecipe))
 	router.HandleFunc("/recipes/{id:[0-9]+}/save/", c.Action(c.SaveRecipe))
 	router.HandleFunc("/recipes/{id:[0-9]+}/", c.Action(c.Recipe))
+	router.HandleFunc("/recipes/new/save/", c.Action(c.SaveRecipe))
 	router.HandleFunc("/recipes/new/", c.Action(c.NewRecipe))
 	router.HandleFunc("/about/", c.Action(c.About))
 	router.HandleFunc("/contact/", c.Action(c.Contact))
