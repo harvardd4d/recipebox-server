@@ -142,11 +142,11 @@ func (c *RBController) RecipeJSON(w http.ResponseWriter, r *http.Request) (err e
 // TODO: use MUX.  this function currently doesn't work.
 func (c *RBController) RecipeJSONAdvanced(w http.ResponseWriter, r *http.Request) (err error) {
 	r.ParseForm()
-	strict, err := strconv.Atoi(r.FormValue("strict"))
-	name := r.FormValue("name")
-	cuisine, _ := strconv.Atoi(r.FormValue("cuisine"))
-	season, _ := strconv.Atoi(r.FormValue("season"))
-	mealtype, _ := strconv.Atoi(r.FormValue("mealtype"))
+	strict, err := strconv.Atoi(r.PostFormValue("strict"))
+	name := r.PostFormValue("name")
+	cuisine, _ := strconv.Atoi(r.PostFormValue("cuisine"))
+	season, _ := strconv.Atoi(r.PostFormValue("season"))
+	mealtype, _ := strconv.Atoi(r.PostFormValue("mealtype"))
 
 	// get all the recipes that match
 	var recipes *list.List

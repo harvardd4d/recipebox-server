@@ -79,8 +79,7 @@ func main() {
 
 	// Set up the router and associate routes with the controller
 	router := mux.NewRouter()
-	// TODO: renable the post requests
-	// router.Post("/recipes/jsonsearch", c.Action(c.RecipeJSONAdvanced))
+	router.Post("/recipes/jsonsearch/", c.Action(c.RecipeJSONAdvanced))
 	router.HandleFunc("/recipes/{id:[0-9]+}/json/", c.Action(c.RecipeJSON))
 	router.HandleFunc("/recipes/{id:[0-9]+}/edit/", c.Action(c.EditRecipe))
 	router.HandleFunc("/recipes/{id:[0-9]+}/save/", c.Action(c.SaveRecipe))
