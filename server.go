@@ -8,6 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/lib/pq"
 	"github.com/unrolled/render"
+	"html/template"
 	"os"
 )
 
@@ -57,9 +58,19 @@ func main() {
 	// Connect to a database, get a *RecipeDB object
 	recipedb := ConnectToDB()
 
+	// Some helper functions for our renderer
+	recipesHelper := template.FuncMap{
+		"MealIs":           MealIs,
+		"SeasonIs":         SeasonIs,
+		"ParseIngredients": ParseIngredients,
+	}
+
 	// Set up renderer.  Default template is templates/layout.tmpl
 	renderer := render.New(render.Options{
 		Layout: "layout",
+		Funcs: []template.FuncMap{
+			recipesHelper,
+		},
 	})
 
 	// Set up the controller. The controller is responsible for
@@ -68,15 +79,18 @@ func main() {
 
 	// Set up the router and associate routes with the controller
 	router := mux.NewRouter()
+	// TODO: renable the post requests
 	// router.Post("/recipes/jsonsearch", c.Action(c.RecipeJSONAdvanced))
-	router.HandleFunc("/recipes/{id:[0-9]+}/json", c.Action(c.RecipeJSON))
-	router.HandleFunc("/recipes/{id:[0-9]+}", c.Action(c.Recipe))
+	router.HandleFunc("/recipes/{id:[0-9]+}/json/", c.Action(c.RecipeJSON))
+	router.HandleFunc("/recipes/{id:[0-9]+}/edit/", c.Action(c.EditRecipe))
+	router.HandleFunc("/recipes/{id:[0-9]+}/save/", c.Action(c.SaveRecipe))
+	router.HandleFunc("/recipes/{id:[0-9]+}/", c.Action(c.Recipe))
+	router.HandleFunc("/recipes/new/", c.Action(c.NewRecipe))
 	router.HandleFunc("/about/", c.Action(c.About))
 	router.HandleFunc("/contact/", c.Action(c.Contact))
 	router.HandleFunc("/index/", c.Action(c.Home))
 	router.HandleFunc("/", c.Action(c.Home))
 	router.HandleFunc("/{path:.+}", c.Action(c.Static))
-
 
 	// Setting up middleware (server, logging layer)
 	n := negroni.Classic()

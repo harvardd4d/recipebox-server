@@ -1,8 +1,19 @@
 <!-- templates/recipes/recipe.tmpl -->
 <h1 class="h1"> {{.Name}} </h1>
-<span class="post-meta small"> {{.Cuisine}} | {{.Mealtype}} | {{.Season}} </span>
+<span class="post-meta small"> 
+  Cuisine: {{.Cuisine}} | Meals:
+  {{if MealIs "Breakfast" .Mealtype}}Breakfast{{end}}
+  {{if MealIs "Lunch" .Mealtype}}Lunch{{end}}
+  {{if MealIs "Dinner" .Mealtype}}Dinner{{end}} | Seasons: 
+  {{if SeasonIs "Spring" .Season}}Spring{{end}}
+  {{if SeasonIs "Summer" .Season}}Summer{{end}}
+  {{if SeasonIs "Fall" .Season}}Fall{{end}}
+  {{if SeasonIs "Winter" .Season}}Winter{{end}}
+  </span>
 <p> {{.Description}} </p>
 <h2 class="h2">Ingredients</h2>
-<p> {{.Ingredientlist}} </p>
+  {{range $index, $element := ParseIngredients .Ingredientlist}} 
+    <p>{{printf "%s" $element}}</p> 
+  {{end}}
 <h2>Instructions</h2>
 <p> {{.Instructions}} </p>

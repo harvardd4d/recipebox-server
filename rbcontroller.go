@@ -21,6 +21,13 @@ type RBController struct {
 	*render.Render
 }
 
+// // RecipeDisplay is a display recipe object.
+// // It's a recipe object + some conveniences, like a
+// // parsed list of ingredients
+// type RecipeDisplay struct {
+// 	*Recipe
+// }
+
 // --------------------------------------------
 //              HELPER FUNCTIONS
 // --------------------------------------------
@@ -69,6 +76,20 @@ func (c *RBController) Contact(w http.ResponseWriter, r *http.Request) (err erro
 	return nil
 }
 
+func (c *RBController) EditRecipe(w http.ResponseWriter, r *http.Request) (err error) {
+	vars := mux.Vars(r)
+	id, _ := strconv.Atoi(vars["id"])
+	recipe, err := c.GetRecipe(id)
+	if err == nil {
+		c.HTML(w, http.StatusOK, "recipes/edit", recipe)
+	} else if err == sql.ErrNoRows {
+		// this means that the recipe wasn't found, so we should return a 404 error
+		c.RenderError(w, 404, "Sorry, your page wasn't found")
+		err = nil
+	}
+	return
+}
+
 // Home creates the homepage
 func (c *RBController) Home(w http.ResponseWriter, r *http.Request) (err error) {
 	stats := map[string]string{
@@ -78,6 +99,11 @@ func (c *RBController) Home(w http.ResponseWriter, r *http.Request) (err error) 
 		"nYears":      "54",
 	}
 	c.HTML(w, http.StatusOK, "home", stats)
+	return nil
+}
+
+func (c *RBController) NewRecipe(w http.ResponseWriter, r *http.Request) (err error) {
+	c.RenderError(w, 404, "New page coming soon!")
 	return nil
 }
 
@@ -145,6 +171,35 @@ func (c *RBController) RecipeJSONAdvanced(w http.ResponseWriter, r *http.Request
 		fmt.Fprintf(w, request)
 	} else {
 		fmt.Fprintf(w, "%v", err.Error())
+	}
+	return
+}
+
+// SaveRecipe takes a POST request from the /recipes/edit/ form
+// and saves the recipe back into the database.
+func (c *RBController) SaveRecipe(w http.ResponseWriter, r *http.Request) (err error) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+	id, _ := strconv.Atoi(idStr)
+
+	name := r.PostFormValue(`name`)
+	cuisine, err := strconv.Atoi(r.PostFormValue(`cuisine`))
+	mealtype, err1 := strconv.Atoi(r.PostFormValue(`mealtype`))
+	season, err2 := strconv.Atoi(r.PostFormValue(`season`))
+	ingredients := r.PostFormValue(`ingredients`)
+	instructions := r.PostFormValue(`instructions`)
+
+	if err != nil || err1 != nil || err2 != nil {
+		fmt.Println("Something went wrong in SaveRecipe")
+		return
+	}
+
+	recipe := Recipe{ID: id, Name: name, Cuisine: cuisine, Mealtype: mealtype,
+		Season: season, Ingredientlist: ingredients, Instructions: instructions}
+	err = c.RecipeDB.EditRecipe(&recipe)
+
+	if err == nil {
+		http.Redirect(w, r, "/recipes/"+idStr+"/", http.StatusFound)
 	}
 	return
 }
