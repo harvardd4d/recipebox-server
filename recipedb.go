@@ -64,10 +64,10 @@ func (recipeDB *RecipeDB) GetRecipesStrict(name string, cuisine,
 
 	fmt.Printf("Getting %v %v %v %v", name, cuisine, mealtype, season)
 	rows, err := recipeDB.DB.Queryx(`SELECT * `+
-		`FROM recipes WHERE name LIKE $1 AND `+
-		`cuisine=$2 AND `+
-		`mealtype=$3 AND `+
-		`season=$4`,
+		`FROM recipes WHERE lower(name) LIKE lower($1) AND `+
+		`(cuisine&$2 > 0) AND `+
+		`(mealtype&$3 > 0) AND `+
+		`(season&$4 > 0)`,
 		name, cuisine, mealtype, season)
 
 	if err != nil {
@@ -92,6 +92,7 @@ func (recipeDB *RecipeDB) GetRecipesStrict(name string, cuisine,
 func (recipeDB *RecipeDB) GetRecipesLoose(name string, cuisine,
 	mealtype, season int) (recipes *list.List, err error) {
 
-	recipes, err = recipeDB.GetRecipesStrict("%"+name+"%", cuisine, mealtype, season)
+	recipes, err = recipeDB.GetRecipesStrict("%"+name+"%", cuisine,
+		mealtype, season)
 	return
 }

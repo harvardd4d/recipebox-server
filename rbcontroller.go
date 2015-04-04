@@ -21,13 +21,6 @@ type RBController struct {
 	*render.Render
 }
 
-// // RecipeDisplay is a display recipe object.
-// // It's a recipe object + some conveniences, like a
-// // parsed list of ingredients
-// type RecipeDisplay struct {
-// 	*Recipe
-// }
-
 // --------------------------------------------
 //              HELPER FUNCTIONS
 // --------------------------------------------

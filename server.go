@@ -60,8 +60,6 @@ func main() {
 
 	// Some helper functions for our renderer
 	recipesHelper := template.FuncMap{
-		//"MealIs":           MealIs,
-		//"SeasonIs":         SeasonIs,
 		"ParseIngredients": ParseIngredients,
 		"ParseMeal":        ParseMealtype,
 		"ParseSeason":      ParseSeason,

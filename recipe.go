@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// constants in map form
 var (
 	Meals = map[int]string{
 		1: "Breakfast",
