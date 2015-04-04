@@ -58,35 +58,46 @@ func (recipeDB *RecipeDB) NewRecipe(recipe *Recipe) (newID int, err error) {
 	return
 }
 
-// GetRecipesStrict gets a Recipe based on a strict search
-func (recipeDB *RecipeDB) GetRecipesStrict(name string, cuisine,
+// getRecipes is a helper function that
+// gets a Recipe based on a search
+func (recipeDB *RecipeDB) getRecipes(strict bool, name string, cuisine,
 	mealtype, season int) (recipes *list.List, err error) {
 
 	fmt.Printf("Getting %v %v %v %v", name, cuisine, mealtype, season)
 
-	var rows *sqlx.Rows
-	// if cuisine == -1, don't match based on cuisine
-	if cuisine == -1 {
-		rows, err = recipeDB.DB.Queryx(`SELECT * `+
-			`FROM recipes WHERE lower(name) LIKE lower($1) AND `+
-			`(mealtype&$2 > 0) AND `+
-			`(season&$3 > 0)`,
-			name, mealtype, season)
-	} else {
-		rows, err = recipeDB.DB.Queryx(`SELECT * `+
-			`FROM recipes WHERE lower(name) LIKE lower($1) AND `+
-			`cuisine=$2 AND `+
-			`(mealtype&$3 > 0) AND `+
-			`(season&$4 > 0)`,
-			name, cuisine, mealtype, season)
+	searchSQL := `SELECT * FROM recipes WHERE lower(name) LIKE lower($1) `
+
+	// cuisine match
+	if cuisine != -1 {
+		searchSQL += `AND cuisine=$2 `
 	}
+
+	// mealtype match
+	if mealtype != -1 {
+		if strict {
+			searchSQL += `AND mealtype=$3 `
+		} else {
+			searchSQL += `AND (mealtype&$3 > 0) `
+		}
+	}
+
+	// season match
+	if season != -1 {
+		if strict {
+			searchSQL += `AND season=$4 `
+		} else {
+			searchSQL += `AND (season&$4 > 0) `
+		}
+	}
+
+	rows, err := recipeDB.DB.Queryx(searchSQL, name, cuisine, mealtype, season)
 
 	if err != nil {
 		fmt.Printf("[WARNING] in GetRecipesStrict: %s", err.Error())
 	}
 
+	// build the return list
 	recipes = list.New()
-
 	for rows.Next() {
 		recipe := new(Recipe)
 		err = rows.StructScan(recipe)
@@ -99,11 +110,20 @@ func (recipeDB *RecipeDB) GetRecipesStrict(name string, cuisine,
 	return
 }
 
+// GetRecipesStrict gets a Recipe based on a strict search
+func (recipeDB *RecipeDB) GetRecipesStrict(name string, cuisine,
+	mealtype, season int) (recipes *list.List, err error) {
+
+	recipes, err = recipeDB.getRecipes(true, "%"+name+"%", cuisine,
+		mealtype, season)
+	return
+}
+
 // GetRecipesLoose gets a Recipe based on a loose search.
 func (recipeDB *RecipeDB) GetRecipesLoose(name string, cuisine,
 	mealtype, season int) (recipes *list.List, err error) {
 
-	recipes, err = recipeDB.GetRecipesStrict("%"+name+"%", cuisine,
+	recipes, err = recipeDB.getRecipes(false, "%"+name+"%", cuisine,
 		mealtype, season)
 	return
 }
