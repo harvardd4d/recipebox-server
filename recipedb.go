@@ -63,12 +63,23 @@ func (recipeDB *RecipeDB) GetRecipesStrict(name string, cuisine,
 	mealtype, season int) (recipes *list.List, err error) {
 
 	fmt.Printf("Getting %v %v %v %v", name, cuisine, mealtype, season)
-	rows, err := recipeDB.DB.Queryx(`SELECT * `+
-		`FROM recipes WHERE lower(name) LIKE lower($1) AND `+
-		`(cuisine&$2 > 0) AND `+
-		`(mealtype&$3 > 0) AND `+
-		`(season&$4 > 0)`,
-		name, cuisine, mealtype, season)
+
+	var rows *sqlx.Rows
+	// if cuisine == -1, don't match based on cuisine
+	if cuisine == -1 {
+		rows, err = recipeDB.DB.Queryx(`SELECT * `+
+			`FROM recipes WHERE lower(name) LIKE lower($1) AND `+
+			`(mealtype&$2 > 0) AND `+
+			`(season&$3 > 0)`,
+			name, mealtype, season)
+	} else {
+		rows, err = recipeDB.DB.Queryx(`SELECT * `+
+			`FROM recipes WHERE lower(name) LIKE lower($1) AND `+
+			`cuisine=$2 AND `+
+			`(mealtype&$3 > 0) AND `+
+			`(season&$4 > 0)`,
+			name, cuisine, mealtype, season)
+	}
 
 	if err != nil {
 		fmt.Printf("[WARNING] in GetRecipesStrict: %s", err.Error())
