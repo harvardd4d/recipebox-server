@@ -7,6 +7,7 @@ The RecipeBox web server, written in Go.  Get the code with
 or, if you are new to go, read `detailed-setup-instructions.md` in this
 directory. View a live preview at 
 [pc-recipebox.herokuapp.com](pc-recipebox.herokuapp.com).
+This is still a work in progress!
 
 ### Setup
 
