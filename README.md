@@ -1,4 +1,6 @@
-### recipebox-server
+## recipebox-server
+
+NOTE: We've decided that Go isn't the best language for our project, and are working to move our code to node.js so that we can develop more features faster. Here is a link to the new repo: https://github.com/harvardd4d/recipebox-server2.
 
 The RecipeBox web server, written in Go.  Get the code with
 
